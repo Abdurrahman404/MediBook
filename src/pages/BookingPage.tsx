@@ -38,12 +38,35 @@ export function BookingPage() {
       title="Book an Appointment"
       subtitle="Choose a specialist, pick an available time, and confirm your visit."
     >
+      <section aria-label="Booking steps" className="mb-7 grid gap-3 rounded-xl border border-gray-200 bg-white p-4 sm:grid-cols-3 sm:p-5">
+        {[
+          { label: 'Choose a specialist', active: !doctor, complete: Boolean(doctor) },
+          { label: 'Date and time', active: Boolean(doctor) && !slot && !appointment, complete: Boolean(slot || appointment) },
+          { label: 'Patient details', active: Boolean(slot) && !appointment, complete: Boolean(appointment) },
+        ].map((step, index) => (
+          <div key={step.label} className="flex items-center gap-3">
+            <span className={`grid h-9 w-9 shrink-0 place-items-center rounded-full text-sm font-semibold ${step.active ? 'bg-brand-900 text-white' : step.complete ? 'bg-brand-100 text-brand-800' : 'bg-gray-100 text-gray-500'}`}>
+              {step.complete ? <CheckCircle2 className="h-5 w-5" aria-hidden="true" /> : `0${index + 1}`}
+            </span>
+            <div>
+              <p className={`text-[10px] font-semibold uppercase tracking-wider ${step.active ? 'text-brand-700' : 'text-gray-500'}`}>
+                {step.active ? 'Current step' : step.complete ? 'Completed' : `Step 0${index + 1}`}
+              </p>
+              <p className={`text-sm font-medium ${step.active ? 'text-brand-900' : 'text-gray-600'}`}>{step.label}</p>
+            </div>
+          </div>
+        ))}
+      </section>
+      <p className="mb-5 inline-flex items-center gap-2 rounded-full bg-white px-3 py-2 text-xs text-gray-600">
+        <Clock3 className="h-4 w-4 text-brand-700" aria-hidden="true" />
+        Appointment slots shown in Asia/Colombo (GMT+5:30)
+      </p>
       {appointment ? (
-        <section className="mx-auto max-w-2xl rounded-xl border border-green-200 bg-white p-8 text-center shadow-sm">
+        <section className="clinic-card mx-auto max-w-2xl p-8 text-center">
           <CheckCircle2 className="mx-auto h-12 w-12 text-green-600" aria-hidden="true" />
           <h2 className="mt-4 text-2xl font-bold text-gray-900">Appointment confirmed</h2>
           <p className="mt-2 text-gray-600">Your appointment has been booked successfully.</p>
-          <div className="my-6 rounded-lg bg-gray-50 p-5 text-left">
+          <div className="my-6 rounded-lg bg-brand-50 p-5 text-left">
             <div className="flex items-center justify-between gap-3">
               <h3 className="font-semibold text-gray-900">{doctor?.name}</h3>
               <StatusBadge status={appointment.status} />
@@ -55,8 +78,8 @@ export function BookingPage() {
             <p className="mt-3 text-sm text-gray-700"><span className="font-medium">Reference:</span> {appointment.id}</p>
           </div>
           <div className="flex flex-wrap justify-center gap-3">
-            <Link to="/dashboard" className="rounded-lg bg-brand-600 px-5 py-2.5 font-semibold text-white hover:bg-brand-700">My appointments</Link>
-            <button type="button" onClick={resetBooking} className="rounded-lg border border-gray-300 px-5 py-2.5 font-semibold text-gray-700 hover:bg-gray-50">Book another</button>
+            <Link to="/dashboard" className="clinic-button">My appointments</Link>
+            <button type="button" onClick={resetBooking} className="rounded-lg border border-gray-300 px-5 py-2.5 text-sm font-semibold text-gray-700 hover:bg-gray-50">Book another</button>
           </div>
         </section>
       ) : slot && doctor ? (
@@ -71,7 +94,7 @@ export function BookingPage() {
           <button type="button" onClick={() => setDoctor(null)} className="inline-flex items-center gap-2 text-sm font-medium text-brand-700 hover:text-brand-900">
             <ArrowLeft className="h-4 w-4" aria-hidden="true" /> Choose another specialist
           </button>
-          <div className="rounded-xl border bg-white p-5 shadow-sm">
+          <div className="clinic-card p-5">
             <div className="flex flex-wrap items-start justify-between gap-4">
               <div>
                 <p className="text-sm font-medium text-brand-700">{doctor.specialty}</p>
@@ -115,7 +138,7 @@ export function BookingPage() {
                     key={availableSlot.id}
                     type="button"
                     onClick={() => setSlot(availableSlot)}
-                    className="rounded-lg border border-brand-200 bg-white px-4 py-3 text-sm font-semibold text-brand-800 hover:border-brand-500 hover:bg-brand-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-brand-600"
+                    className="rounded-lg border border-brand-200 bg-white px-4 py-3 text-sm font-semibold tabular-nums text-brand-900 transition hover:border-brand-500 hover:bg-brand-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-brand-600"
                   >
                     {formatClinicDateTime(availableSlot.start_time)}
                   </button>
@@ -150,13 +173,13 @@ export function BookingPage() {
           ) : doctors.length ? (
             <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
               {doctors.map((item) => (
-                <article key={item.id} className="flex flex-col rounded-xl border bg-white p-5 shadow-sm">
-                  <Stethoscope className="h-8 w-8 text-brand-600" aria-hidden="true" />
+                <article key={item.id} className="clinic-card flex flex-col p-5 transition hover:border-brand-200">
+                  <span className="grid h-11 w-11 place-items-center rounded-lg bg-brand-100 text-brand-800"><Stethoscope className="h-6 w-6" aria-hidden="true" /></span>
                   <p className="mt-4 text-sm font-medium text-brand-700">{item.specialty}</p>
                   <h3 className="mt-1 text-lg font-bold text-gray-900">{item.name}</h3>
                   {item.bio && <p className="mt-2 flex-1 text-sm leading-6 text-gray-600">{item.bio}</p>}
                   {item.consultation_fee !== null && <p className="mt-4 text-sm font-semibold text-gray-800">{item.consultation_fee.toLocaleString('en-LK', { style: 'currency', currency: 'LKR' })}</p>}
-                  <button type="button" onClick={() => setDoctor(item)} className="mt-4 rounded-lg bg-brand-600 px-4 py-2.5 text-sm font-semibold text-white hover:bg-brand-700">View available times</button>
+                  <button type="button" onClick={() => setDoctor(item)} className="clinic-button mt-4 w-full">View available times</button>
                 </article>
               ))}
             </div>

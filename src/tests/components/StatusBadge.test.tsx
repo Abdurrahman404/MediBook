@@ -3,9 +3,9 @@ import { describe, expect, it } from 'vitest'
 import { StatusBadge } from '@/components/appointments/StatusBadge'
 
 describe('StatusBadge', () => {
-  it('renders scheduled status with blue styling', () => {
+  it('renders scheduled status with green styling', () => {
     render(<StatusBadge status="scheduled" />)
-    expect(screen.getByText('Scheduled')).toHaveClass('bg-blue-100')
+    expect(screen.getByText('Scheduled')).toHaveClass('bg-emerald-100')
   })
 
   it('renders cancelled status with red styling', () => {

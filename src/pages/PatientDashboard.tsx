@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { CalendarDays, Search } from 'lucide-react'
+import { useAuth } from '@/contexts/AuthContext'
 import { StatusBadge } from '@/components/appointments/StatusBadge'
 import { PageLayout } from '@/components/layout/PageLayout'
 import { useAppointments, useCancelAppointment } from '@/hooks/useAppointments'
@@ -10,6 +11,7 @@ import type { AppointmentWithDoctor } from '@/types'
 type AppointmentTab = 'upcoming' | 'past'
 
 export function PatientDashboard() {
+  const { profile } = useAuth()
   const appointmentsQuery = useAppointments()
   const cancelAppointment = useCancelAppointment()
   const [tab, setTab] = useState<AppointmentTab>('upcoming')
@@ -33,6 +35,14 @@ export function PatientDashboard() {
       return tab === 'upcoming' ? difference : -difference
     })
   }, [appointmentsQuery.data, search, tab])
+  const appointmentCounts = useMemo(() => {
+    const now = Date.now()
+    const records = appointmentsQuery.data ?? []
+    return {
+      upcoming: records.filter((item) => item.status === 'scheduled' && new Date(item.start_time).getTime() >= now).length,
+      past: records.filter((item) => !(item.status === 'scheduled' && new Date(item.start_time).getTime() >= now)).length,
+    }
+  }, [appointmentsQuery.data])
 
   function requestCancellation(appointment: AppointmentWithDoctor) {
     cancelAppointment.mutate(appointment.id, {
@@ -44,10 +54,31 @@ export function PatientDashboard() {
     <PageLayout
       title="My Appointments"
       subtitle="View your upcoming visits and keep track of your appointment history."
-      actions={<Link to="/book" className="rounded-lg bg-brand-600 px-4 py-2.5 text-sm font-semibold text-white hover:bg-brand-700">Book an appointment</Link>}
+      actions={<Link to="/book" className="clinic-button">Book an appointment</Link>}
     >
       <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <div className="inline-flex rounded-lg bg-gray-100 p-1" role="tablist" aria-label="Appointment time period">
+        <p className="clinic-eyebrow">Patient portal{profile?.full_name ? ` · Welcome back, ${profile.full_name}` : ''}</p>
+      </div>
+      <section aria-label="Appointment overview" className="mb-6 grid gap-4 md:grid-cols-2">
+        <article className="clinic-card flex items-center justify-between p-5">
+          <div>
+            <p className="clinic-eyebrow">Scheduled care</p>
+            <h2 className="mt-1 font-display text-lg font-semibold text-brand-900">Upcoming appointments</h2>
+            <p className="mt-2 text-sm text-gray-600">Your next scheduled clinic visits.</p>
+          </div>
+          <span className="font-display text-4xl font-semibold tabular-nums text-brand-900">{appointmentCounts.upcoming}</span>
+        </article>
+        <article className="clinic-card flex items-center justify-between p-5">
+          <div>
+            <p className="clinic-eyebrow">Visit history</p>
+            <h2 className="mt-1 font-display text-lg font-semibold text-brand-900">Past appointments</h2>
+            <p className="mt-2 text-sm text-gray-600">Completed and cancelled visits.</p>
+          </div>
+          <span className="font-display text-4xl font-semibold tabular-nums text-brand-900">{appointmentCounts.past}</span>
+        </article>
+      </section>
+      <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+        <div className="inline-flex rounded-lg border border-gray-200 bg-white p-1" role="tablist" aria-label="Appointment time period">
           {(['upcoming', 'past'] as const).map((value) => (
             <button
               key={value}
@@ -55,7 +86,7 @@ export function PatientDashboard() {
               role="tab"
               aria-selected={tab === value}
               onClick={() => { setTab(value); setCancelId(null) }}
-              className={`rounded-md px-4 py-2 text-sm font-medium capitalize ${tab === value ? 'bg-white text-brand-700 shadow-sm' : 'text-gray-600 hover:text-gray-900'}`}
+              className={`rounded-md px-4 py-2 text-sm font-medium capitalize ${tab === value ? 'bg-brand-100 text-brand-900' : 'text-gray-600 hover:text-gray-900'}`}
             >
               {value}
             </button>
@@ -69,7 +100,7 @@ export function PatientDashboard() {
             value={search}
             onChange={(event) => setSearch(event.target.value)}
             placeholder="Search doctor or reason"
-            className="w-full rounded-lg border border-gray-300 bg-white py-2.5 pl-9 pr-3 text-sm outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-100"
+            className="w-full rounded-lg border border-gray-200 bg-white py-2.5 pl-9 pr-3 text-sm outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-100"
           />
         </label>
       </div>
@@ -86,7 +117,7 @@ export function PatientDashboard() {
           {appointments.map((appointment) => {
             const canCancel = appointment.status === 'scheduled' && new Date(appointment.start_time).getTime() > Date.now()
             return (
-              <article key={appointment.id} className="rounded-xl border bg-white p-5 shadow-sm sm:p-6">
+              <article key={appointment.id} className="clinic-card p-5 sm:p-6">
                 <div className="flex flex-wrap items-start justify-between gap-3">
                   <div>
                     <p className="text-sm font-medium text-brand-700">{appointment.doctor.specialty}</p>
@@ -103,7 +134,7 @@ export function PatientDashboard() {
                   {appointment.patient_phone && <p><span className="font-medium text-gray-700">Contact:</span> <span className="text-gray-600">{appointment.patient_phone}</span></p>}
                 </div>
                 {canCancel && (
-                  <div className="mt-5 border-t pt-4">
+                  <div className="mt-5 border-t border-gray-100 pt-4">
                     {cancelId === appointment.id ? (
                       <div className="flex flex-wrap items-center justify-between gap-3 rounded-lg bg-amber-50 p-4">
                         <p className="text-sm text-amber-900">Cancel this appointment? This action cannot be undone.</p>
@@ -125,15 +156,15 @@ export function PatientDashboard() {
           })}
         </div>
       ) : (
-        <div className="rounded-xl border border-dashed bg-white px-6 py-12 text-center">
-          <CalendarDays className="mx-auto h-10 w-10 text-gray-400" aria-hidden="true" />
+        <div className="clinic-card border-dashed px-6 py-12 text-center">
+          <CalendarDays className="mx-auto h-10 w-10 text-brand-400" aria-hidden="true" />
           <h2 className="mt-4 text-lg font-semibold text-gray-900">
             {search.trim() ? 'No matching appointments' : tab === 'upcoming' ? 'No upcoming appointments' : 'No past appointments'}
           </h2>
           <p className="mt-2 text-sm text-gray-600">
             {search.trim() ? 'Try a different search term.' : tab === 'upcoming' ? 'When you book a visit, it will appear here.' : 'Your completed and cancelled visits will appear here.'}
           </p>
-          {!search.trim() && tab === 'upcoming' && <Link to="/book" className="mt-5 inline-flex rounded-lg bg-brand-600 px-4 py-2.5 text-sm font-semibold text-white hover:bg-brand-700">Find a specialist</Link>}
+          {!search.trim() && tab === 'upcoming' && <Link to="/book" className="clinic-button mt-5">Find a specialist</Link>}
         </div>
       )}
     </PageLayout>

@@ -4,26 +4,26 @@
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
+    --background: 166 64% 96%;
+    --foreground: 168 24% 10%;
     --card: 0 0% 100%;
     --card-foreground: 222.2 84% 4.9%;
     --popover: 0 0% 100%;
     --popover-foreground: 222.2 84% 4.9%;
-    --primary: 221.2 83.2% 53.3%;
-    --primary-foreground: 210 40% 98%;
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
+    --primary: 168 89% 7%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 168 88% 23%;
+    --secondary-foreground: 0 0% 100%;
+    --muted: 160 32% 93%;
+    --muted-foreground: 160 5% 31%;
+    --accent: 160 38% 91%;
+    --accent-foreground: 168 89% 7%;
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 210 40% 98%;
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 221.2 83.2% 53.3%;
-    --radius: 0.5rem;
+    --border: 150 12% 90%;
+    --input: 150 12% 90%;
+    --ring: 168 88% 23%;
+    --radius: 0.75rem;
   }
 
   * {
@@ -32,6 +32,11 @@
 
   body {
     @apply bg-background text-foreground font-sans antialiased;
+    font-family: Inter, ui-sans-serif, system-ui, sans-serif;
+  }
+
+  h1, h2, h3, h4 {
+    font-family: Manrope, Inter, ui-sans-serif, system-ui, sans-serif;
   }
 
   /* Smooth scroll */
@@ -42,14 +47,26 @@
 
 @layer components {
   .page-container {
-    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8;
+    @apply max-w-7xl mx-auto px-4 py-8 sm:px-6 lg:px-8 lg:py-10;
   }
 
   .section-heading {
-    @apply text-2xl font-bold text-gray-900 mb-1;
+    @apply text-2xl font-semibold tracking-tight text-gray-900 mb-1;
   }
 
   .section-subheading {
     @apply text-sm text-gray-500 mb-6;
+  }
+
+  .clinic-card {
+    @apply rounded-xl border border-gray-200/80 bg-white;
+  }
+
+  .clinic-eyebrow {
+    @apply text-[11px] font-semibold uppercase tracking-[0.16em] text-brand-700;
+  }
+
+  .clinic-button {
+    @apply inline-flex items-center justify-center gap-2 rounded-lg bg-brand-900 px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-brand-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-700 disabled:cursor-not-allowed disabled:opacity-60;
   }
 }

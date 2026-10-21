@@ -50,6 +50,7 @@ Monitor appointment activity, review booking details, filter records, and update
 - **Reliable booking:** Server-side validation and transaction-safe booking operations.
 - **Maintainable:** TypeScript, reusable components, validation schemas, and automated tests.
 - **Sri Lanka-ready:** Appointment scheduling uses the `Asia/Colombo` timezone.
+- **Calm and accessible UI:** A responsive botanical-green theme, clear typography, and keyboard-visible controls are used throughout the patient and admin workflows.
 
 ---
 

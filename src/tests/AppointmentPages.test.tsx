@@ -20,6 +20,7 @@ const hooks = vi.hoisted(() => ({
 }))
 
 vi.mock('@/hooks/useDoctors', () => ({ useDoctors: () => hooks.doctors }))
+vi.mock('@/contexts/AuthContext', () => ({ useAuth: () => ({ profile: null }) }))
 vi.mock('@/hooks/useSlots', () => ({ useSlots: () => hooks.slots }))
 vi.mock('@/hooks/useAppointments', () => ({
   useBookAppointment: () => hooks.booking,

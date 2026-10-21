@@ -1,10 +1,10 @@
 import { useState } from 'react'
-import { CalendarDays, CheckCircle2, ClipboardList, XCircle } from 'lucide-react'
+import { CalendarDays, CheckCircle2, ClipboardList, Clock3, MapPin, XCircle } from 'lucide-react'
 import { StatusBadge } from '@/components/appointments/StatusBadge'
 import { PageLayout } from '@/components/layout/PageLayout'
 import { useAdminAppointments, useAdminStats, useAdminUpdateStatus } from '@/hooks/useAdminAppointments'
 import { useDoctors } from '@/hooks/useDoctors'
-import { formatClinicDateTime } from '@/lib/utils'
+import { formatClinicDateTime, getClinicDate } from '@/lib/utils'
 import type { AdminFilters, AppointmentStatus } from '@/types'
 
 const initialFilters: AdminFilters = {
@@ -16,10 +16,10 @@ const initialFilters: AdminFilters = {
 }
 
 const statCards = [
-  { key: 'total', label: 'All appointments', icon: ClipboardList, color: 'text-brand-700 bg-brand-50' },
-  { key: 'today', label: 'Today', icon: CalendarDays, color: 'text-violet-700 bg-violet-50' },
-  { key: 'completed', label: 'Completed', icon: CheckCircle2, color: 'text-green-700 bg-green-50' },
-  { key: 'cancelled', label: 'Cancelled', icon: XCircle, color: 'text-red-700 bg-red-50' },
+  { key: 'total', label: 'Total appointments', icon: ClipboardList, color: 'text-brand-800 bg-brand-100' },
+  { key: 'today', label: 'Scheduled today', icon: CalendarDays, color: 'text-brand-800 bg-brand-100' },
+  { key: 'completed', label: 'Completed visits', icon: CheckCircle2, color: 'text-green-800 bg-green-100' },
+  { key: 'cancelled', label: 'Cancelled visits', icon: XCircle, color: 'text-red-800 bg-red-100' },
 ] as const
 
 export function AdminDashboard() {
@@ -34,10 +34,21 @@ export function AdminDashboard() {
   }
 
   return (
-    <PageLayout title="Admin Dashboard" subtitle="Review appointments, update visit outcomes, and monitor clinic activity.">
+    <PageLayout title="Admin Dashboard" subtitle="Clinic operations · Review appointments, update visit outcomes, and monitor activity.">
+      <div className="mb-6 flex flex-wrap items-center justify-between gap-3 rounded-xl border border-gray-200 bg-white px-4 py-3">
+        <span className="inline-flex items-center gap-2 rounded-full bg-brand-100 px-3 py-1.5 text-xs font-semibold text-brand-900">
+          <span className="h-2 w-2 rounded-full bg-brand-600" /> Admin workspace
+        </span>
+        <span className="inline-flex items-center gap-2 text-xs text-gray-600">
+          <MapPin className="h-4 w-4 text-brand-700" aria-hidden="true" />
+          Clinic date: {new Date(`${getClinicDate()}T12:00:00+05:30`).toLocaleDateString('en-LK', { dateStyle: 'full', timeZone: 'Asia/Colombo' })}
+          <Clock3 className="ml-2 h-4 w-4 text-brand-700" aria-hidden="true" />
+          Asia/Colombo (GMT+5:30)
+        </span>
+      </div>
       <section aria-label="Appointment statistics" className="mb-7 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
         {statCards.map(({ key, label, icon: Icon, color }) => (
-          <article key={key} className="flex items-center gap-4 rounded-xl border bg-white p-5 shadow-sm">
+          <article key={key} className="clinic-card flex items-center gap-4 p-5">
             <div className={`rounded-lg p-3 ${color}`}><Icon className="h-5 w-5" aria-hidden="true" /></div>
             <div>
               <p className="text-sm text-gray-500">{label}</p>
@@ -56,7 +67,7 @@ export function AdminDashboard() {
         </div>
       )}
 
-      <section className="overflow-hidden rounded-xl border bg-white shadow-sm">
+      <section className="overflow-hidden rounded-xl border border-gray-200 bg-white">
         <div className="border-b p-5">
           <div>
             <h2 className="text-lg font-bold text-gray-900">Appointments</h2>
@@ -115,8 +126,8 @@ export function AdminDashboard() {
           </div>
         ) : appointmentsQuery.data?.length ? (
           <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-gray-200 text-left text-sm">
-              <thead className="bg-gray-50 text-xs uppercase tracking-wide text-gray-500">
+            <table className="min-w-full divide-y divide-gray-100 text-left text-sm">
+              <thead className="bg-brand-50 text-[11px] uppercase tracking-wider text-gray-600">
                 <tr>
                   <th scope="col" className="px-5 py-3">Patient</th>
                   <th scope="col" className="px-5 py-3">Doctor</th>
@@ -128,7 +139,7 @@ export function AdminDashboard() {
               </thead>
               <tbody className="divide-y divide-gray-100">
                 {appointmentsQuery.data.map((appointment) => (
-                  <tr key={appointment.id} className="align-top hover:bg-gray-50">
+                  <tr key={appointment.id} className="align-top transition-colors hover:bg-brand-50/50">
                     <td className="px-5 py-4">
                       <p className="font-semibold text-gray-900">{appointment.patient.full_name}</p>
                       <p className="mt-1 text-gray-500">{appointment.patient.email}</p>

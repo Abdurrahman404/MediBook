@@ -35,13 +35,13 @@ afterEach(cleanup)
 
 describe('Phase 1 routes', () => {
   it.each([
-    ['/', 'MediBook'],
+    ['/', 'Better care starts with a simpler appointment.'],
     ['/login', 'Sign in'],
     ['/register', 'Create an account'],
   ])('renders the public route %s', (path, heading) => {
     visit(path)
     expect(screen.getByRole('heading', { name: heading })).toBeInTheDocument()
-    expect(screen.getByRole('link', { name: 'Get started' })).toBeInTheDocument()
+    expect(screen.getAllByRole('link', { name: 'Get started' }).length).toBeGreaterThan(0)
   })
 
   it.each(['/book', '/dashboard', '/admin'])('redirects anonymous visitors from %s to login', (path) => {
@@ -76,6 +76,6 @@ describe('Phase 1 routes', () => {
 
   it('redirects unknown routes to the landing page', () => {
     visit('/unknown')
-    expect(screen.getByRole('heading', { name: 'MediBook' })).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: 'Better care starts with a simpler appointment.' })).toBeInTheDocument()
   })
 })

@@ -26,11 +26,12 @@ export function BookingForm({ slot, doctorName, onBack, onBooked }: BookingFormP
   }
 
   return (
-    <section className="mx-auto max-w-2xl rounded-xl border bg-white p-6 shadow-sm">
+    <section className="clinic-card mx-auto max-w-2xl p-6 sm:p-8">
       <button type="button" onClick={onBack} className="mb-5 inline-flex items-center gap-2 text-sm font-medium text-brand-700 hover:text-brand-900">
         <ArrowLeft className="h-4 w-4" aria-hidden="true" /> Choose another time
       </button>
-      <h2 className="text-xl font-bold text-gray-900">Confirm your appointment</h2>
+      <p className="clinic-eyebrow mt-2">Patient details</p>
+      <h2 className="mt-1 font-display text-2xl font-semibold text-brand-900">Confirm your appointment</h2>
       <p className="mt-1 text-sm text-gray-600">{doctorName} · {formatClinicDateTime(slot.start_time)}</p>
 
       <form onSubmit={handleSubmit(submit)} className="mt-6 space-y-5" noValidate>
@@ -43,7 +44,7 @@ export function BookingForm({ slot, doctorName, onBack, onBooked }: BookingFormP
             placeholder="Briefly describe what you would like the doctor to help with"
             aria-invalid={errors.reason_for_visit ? true : undefined}
             aria-describedby={errors.reason_for_visit ? 'reason_for_visit-error' : undefined}
-            className={`block w-full rounded-lg border bg-white px-3 py-2.5 text-base text-gray-900 shadow-sm outline-none transition focus:border-brand-500 focus:ring-2 focus:ring-brand-100 ${errors.reason_for_visit ? 'border-red-500' : 'border-gray-300'}`}
+            className={`block w-full rounded-lg border bg-white px-3 py-2.5 text-base text-gray-900 outline-none transition focus:border-brand-500 focus:ring-2 focus:ring-brand-100 ${errors.reason_for_visit ? 'border-red-500' : 'border-gray-300'}`}
             {...register('reason_for_visit')}
           />
           {errors.reason_for_visit && <p id="reason_for_visit-error" className="text-sm text-red-600">{errors.reason_for_visit.message}</p>}
@@ -59,7 +60,7 @@ export function BookingForm({ slot, doctorName, onBack, onBooked }: BookingFormP
           {...register('patient_phone')}
         />
         {booking.error && <p role="alert" className="rounded-lg bg-red-50 p-3 text-sm text-red-700">{booking.error.message}</p>}
-        <button type="submit" disabled={booking.isPending} className="w-full rounded-lg bg-brand-600 px-5 py-3 font-semibold text-white hover:bg-brand-700 disabled:cursor-not-allowed disabled:opacity-60">
+        <button type="submit" disabled={booking.isPending} className="clinic-button w-full">
           {booking.isPending ? 'Booking appointment…' : 'Confirm appointment'}
         </button>
       </form>

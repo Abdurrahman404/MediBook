@@ -1,10 +1,10 @@
 import type { AppointmentStatus } from '@/types'
 
 const statusStyles: Record<AppointmentStatus, string> = {
-  scheduled: 'bg-blue-100 text-blue-800',
-  completed: 'bg-green-100 text-green-800',
+  scheduled: 'bg-emerald-100 text-emerald-900',
+  completed: 'bg-green-100 text-green-900',
   cancelled: 'bg-red-100 text-red-800',
-  no_show: 'bg-gray-100 text-gray-700',
+  no_show: 'bg-amber-100 text-amber-900',
 }
 
 const statusLabels: Record<AppointmentStatus, string> = {
@@ -16,7 +16,7 @@ const statusLabels: Record<AppointmentStatus, string> = {
 
 export function StatusBadge({ status }: { status: AppointmentStatus }) {
   return (
-    <span className={`inline-flex rounded-full px-2.5 py-1 text-xs font-semibold ${statusStyles[status]}`}>
+    <span className={`inline-flex rounded-md px-2.5 py-1 text-[11px] font-semibold tracking-wide ${statusStyles[status]}`}>
       {statusLabels[status]}
     </span>
   )

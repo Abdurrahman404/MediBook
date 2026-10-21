@@ -329,7 +329,7 @@ describe('Authentication flows with the real provider and route guards', () => {
     await screen.findByRole('heading', { name: 'My Appointments' })
     client.setQueryData(['appointments'], ['private data'])
     await userEvent.click(screen.getByRole('button', { name: 'Sign out' }))
-    expect(await screen.findByRole('heading', { name: 'MediBook' })).toBeInTheDocument()
+    expect(await screen.findByRole('heading', { name: 'Better care starts with a simpler appointment.' })).toBeInTheDocument()
     expect(screen.queryByRole('button', { name: 'Sign out' })).toBeNull()
     expect(client.getQueryData(['appointments'])).toBeUndefined()
   })

@@ -47,22 +47,26 @@ const config: Config = {
         },
         // MediBook brand colors
         brand: {
-          50:  '#eff6ff',
-          100: '#dbeafe',
-          200: '#bfdbfe',
-          300: '#93c5fd',
-          400: '#60a5fa',
-          500: '#3b82f6',
-          600: '#2563eb',
-          700: '#1d4ed8',
-          800: '#1e40af',
-          900: '#1e3a8a',
+          50:  '#effcf9',
+          100: '#d9f1e9',
+          200: '#b8e4d6',
+          300: '#85ceb8',
+          400: '#4eae94',
+          500: '#278d75',
+          600: '#16745f',
+          700: '#0b5c4c',
+          800: '#08483c',
+          900: '#021e1a',
         },
       },
       borderRadius: {
         lg: 'var(--radius)',
         md: 'calc(var(--radius) - 2px)',
         sm: 'calc(var(--radius) - 4px)',
+      },
+      fontFamily: {
+        sans: ['Inter', 'ui-sans-serif', 'system-ui'],
+        display: ['Manrope', 'Inter', 'ui-sans-serif', 'system-ui'],
       },
       keyframes: {
         'accordion-down': {
